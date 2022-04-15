@@ -14,7 +14,6 @@ use chrono::{offset::TimeZone, Datelike, Timelike, Utc};
 use tantivy as tv;
 
 use crate::{facet::Facet, to_pyerr};
-use pyo3::{PyMappingProtocol, PyObjectProtocol};
 use serde_json::Value as JsonValue;
 use std::{
     collections::{BTreeMap, HashMap},
@@ -386,6 +385,16 @@ impl Document {
             .map(|value| value_to_py(py, value))
             .collect::<PyResult<Vec<_>>>()
     }
+
+    fn __getitem__(&self, field_name: &str) -> PyResult<Vec<PyObject>> {
+        let gil = Python::acquire_gil();
+        let py = gil.python();
+        self.get_all(py, field_name)
+    }
+
+    fn __repr__(&self) -> PyResult<String> {
+        Ok(format!("{:?}", self))
+    }
 }
 
 impl Document {
@@ -397,21 +406,5 @@ impl Document {
             .get(field)
             .into_iter()
             .flat_map(|values| values.iter())
-    }
-}
-
-#[pyproto]
-impl PyMappingProtocol for Document {
-    fn __getitem__(&self, field_name: &str) -> PyResult<Vec<PyObject>> {
-        let gil = Python::acquire_gil();
-        let py = gil.python();
-        self.get_all(py, field_name)
-    }
-}
-
-#[pyproto]
-impl PyObjectProtocol for Document {
-    fn __repr__(&self) -> PyResult<String> {
-        Ok(format!("{:?}", self))
     }
 }

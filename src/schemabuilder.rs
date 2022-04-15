@@ -323,8 +323,8 @@ impl SchemaBuilder {
         stored: bool,
         indexed: bool,
         fast: Option<&str>,
-    ) -> PyResult<schema::IntOptions> {
-        let opts = schema::IntOptions::default();
+    ) -> PyResult<schema::NumericOptions> {
+        let opts = schema::NumericOptions::default();
 
         let opts = if stored { opts.set_stored() } else { opts };
         let opts = if indexed { opts.set_indexed() } else { opts };
