@@ -114,15 +114,12 @@ class TestClass(object):
 
     def test_and_query_parser_default_fields(self, ram_index):
         query = ram_index.parse_query("winter", default_field_names=["title"])
-        assert repr(query) == """Query(TermQuery(Term(field=0,bytes=[119, 105, 110, 116, 101, 114])))"""
+        assert repr(query) == """Query(TermQuery(Term(type=Str, field=0, "winter")))"""
 
     def test_and_query_parser_default_fields_undefined(self, ram_index):
         query = ram_index.parse_query("winter")
         assert (
-            repr(query) == "Query(BooleanQuery { subqueries: ["
-            "(Should, TermQuery(Term(field=0,bytes=[119, 105, 110, 116, 101, 114]))), "
-            "(Should, TermQuery(Term(field=1,bytes=[119, 105, 110, 116, 101, 114])))] "
-            "})"
+            repr(query) == """Query(BooleanQuery { subqueries: [(Should, TermQuery(Term(type=Str, field=0, "winter"))), (Should, TermQuery(Term(type=Str, field=1, "winter")))] })"""
         )
 
     def test_query_errors(self, ram_index):
