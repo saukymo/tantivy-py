@@ -331,6 +331,17 @@ impl Document {
         add_value(self, field_name, bytes);
     }
 
+    /// Add a bytes value to the document.
+    ///
+    /// Args:
+    ///     field_name (str): The field for which we are adding the bytes.
+    ///     value (str): The json object that will be added to the document.
+    fn add_json(&mut self, field_name: String, json: &str) {
+        let json_object: serde_json::Value =
+            serde_json::from_str(json).unwrap();
+        add_value(self, field_name, json_object);
+    }
+
     /// Returns the number of added fields that have been added to the document
     #[getter]
     fn num_fields(&self) -> usize {
